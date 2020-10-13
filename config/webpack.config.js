@@ -142,6 +142,8 @@ module.exports = function(webpackEnv) {
     entry: {
       index: [ paths.appIndexJs, isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient')].filter(Boolean),
       detail: [ paths.appDetailJs, isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient')].filter(Boolean),
+      form: [ paths.appFormJs, isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient')].filter(Boolean),
+      templates: [ paths.appTemplatesJs, isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient')].filter(Boolean),
     },
     output: {
       // The build folder.
@@ -528,8 +530,64 @@ module.exports = function(webpackEnv) {
           {
             inject: true,
             template: paths.appDetailHtml,
-            filename: 'detailIndex.html',
+            filename: 'detail.html',
             chunks: ['detail']
+          },
+          isEnvProduction
+            ? {
+                minify: {
+                  removeComments: true,
+                  collapseWhitespace: true,
+                  removeRedundantAttributes: true,
+                  useShortDoctype: true,
+                  removeEmptyAttributes: true,
+                  removeStyleLinkTypeAttributes: true,
+                  keepClosingSlash: true,
+                  minifyJS: true,
+                  minifyCSS: true,
+                  minifyURLs: true,
+                },
+              }
+            : undefined
+        )
+      ),
+
+      new HtmlWebpackPlugin(
+        Object.assign(
+          {},
+          {
+            inject: true,
+            template: paths.appFormHtml,
+            filename: 'form.html',
+            chunks: ['form']
+          },
+          isEnvProduction
+            ? {
+                minify: {
+                  removeComments: true,
+                  collapseWhitespace: true,
+                  removeRedundantAttributes: true,
+                  useShortDoctype: true,
+                  removeEmptyAttributes: true,
+                  removeStyleLinkTypeAttributes: true,
+                  keepClosingSlash: true,
+                  minifyJS: true,
+                  minifyCSS: true,
+                  minifyURLs: true,
+                },
+              }
+            : undefined
+        )
+      ),
+
+      new HtmlWebpackPlugin(
+        Object.assign(
+          {},
+          {
+            inject: true,
+            template: paths.appTemplatesHtml,
+            filename: 'templates.html',
+            chunks: ['templates']
           },
           isEnvProduction
             ? {
@@ -605,7 +663,9 @@ module.exports = function(webpackEnv) {
           }, seed);
           const entrypointFiles = [
             ...entrypoints.index,
-            ...entrypoints.detail
+            ...entrypoints.detail,
+            ...entrypoints.form,
+            ...entrypoints.templates
           ];
 
           return {
